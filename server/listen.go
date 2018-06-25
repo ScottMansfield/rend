@@ -122,7 +122,9 @@ func ListenAndServe(l ListenConst, ps []protocol.Components, s ServerConst, o or
 		remote, err := listener.Accept()
 		if err != nil {
 			log.Println("Error accepting connection from remote:", err.Error())
-			remote.Close()
+			if remote != nil {
+				remote.Close()
+			}
 			continue
 		}
 		metrics.IncCounter(MetricConnectionsEstablishedExt)
