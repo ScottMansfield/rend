@@ -68,6 +68,7 @@ var (
 	batchOpts batched.Opts
 
 	l2enabled bool
+	l2port    int
 	l2sock    string
 
 	locked      bool
@@ -104,6 +105,7 @@ func init() {
 	flag.Float64Var(&tempBatchOverloadedRatio, "batch-expand-overloaded-ratio", 0, "The ratio of connections whose average size is greater than the max batch size - 1 above which the pool will expand (float). Positive values only between 0 and 1. 0 assumes default.")
 
 	flag.BoolVar(&l2enabled, "l2-enabled", false, "Specifies if l2 is enabled")
+	flag.IntVar(&l2port, "l2-direct-port", 0, "The direct port for L2 cache")
 	flag.StringVar(&l2sock, "l2-sock", "invalid.sock", "Specifies the unix socket to connect to L2. Only used if --l2-enabled is true.")
 
 	flag.BoolVar(&locked, "locked", false, "Add locking to overall operations (above L1/L2 layers)")
@@ -215,7 +217,9 @@ func main() {
 
 	if l2enabled {
 		// If L2 is enabled, start the batch L1 / L2 orchestrator
-		l = server.TCPListener(batchPort)
+		//l = server.TCPListener(batchPort)
+		l = server.TCPListener(l2port)
+
 		o := orcas.L1L2Batch
 
 		if locked {
