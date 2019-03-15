@@ -96,29 +96,30 @@ It should be noted here that the in-memory L1 implementation is functionally cor
 
 ### Using Rend as a set of libraries
 
-To get a working debug server using the Rend libraries, it takes 21 lines of code, including imports and whitespace:
+To get a working debug server using the Rend libraries, it takes 22 lines of code, including imports and whitespace:
 
 ```go
 package main
 
 import (
-    "github.com/netflix/rend/handlers"
-    "github.com/netflix/rend/handlers/inmem"
-    "github.com/netflix/rend/orcas"
-    "github.com/netflix/rend/server"
+	"github.com/netflix/rend/handlers"
+	"github.com/netflix/rend/handlers/inmem"
+	"github.com/netflix/rend/orcas"
+	"github.com/netflix/rend/protocol"
+	"github.com/netflix/rend/protocol/binprot"
+	"github.com/netflix/rend/protocol/textprot"
+	"github.com/netflix/rend/server"
 )
 
 func main() {
-    server.ListenAndServe(
-        server.ListenArgs{
-            Type: server.ListenTCP,
-            Port: 11211,
-        },
-        server.Default,
-        orcas.L1Only,
-        inmem.New,
-        handlers.NilHandler(""),
-    )
+	server.ListenAndServe(
+		server.TCPListener(11211),
+		[]protocol.Components{binprot.Components, textprot.Components},
+		server.Default,
+		orcas.L1Only,
+		inmem.New,
+		handlers.NilHandler,
+	)
 }
 ```
 
