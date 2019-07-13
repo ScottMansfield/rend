@@ -22,7 +22,6 @@ import (
 	"os"
 	"os/signal"
 	"runtime/debug"
-	"sync"
 
 	"github.com/netflix/rend/handlers"
 	"github.com/netflix/rend/handlers/inmem"
@@ -226,7 +225,5 @@ func main() {
 	}
 
 	// Block forever
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	wg.Wait()
+	select {}
 }
